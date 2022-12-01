@@ -51,7 +51,7 @@ client.on("PRIVMSG", (msg) => {
 });
 
 function updateStat({senderUserID, displayName, messageText}) {
-    const message = messageText.replace(INVIS_CHAR,"").trim().toLowerCase()
+    const message = messageText.replaceAll(INVIS_CHAR,"").trim().toLowerCase()
     if (STAT_KEYWORDS.includes(message)) {
 
         updateDb({
