@@ -34,6 +34,7 @@ client.on("ready", () => {
     console.log("[IRC] Ready");
     client.join("ipfx");
     client.join("2547techno");
+    client.join("markzynk");
     client.join("mizkif");
 });
 client.on("close", err => console.log(`[IRC] Closed: ${err}`))
@@ -45,6 +46,7 @@ client.on("PRIVMSG", (msg) => {
     if (msg.channelID == process.env.TARGET_CHANNEL) {
         updateStat(msg)
     }
+    processCommand(msg);
 });
 
 function updateStat({senderUserID, displayName, messageText}) {
@@ -56,6 +58,19 @@ function updateStat({senderUserID, displayName, messageText}) {
             stat: messageText.trim().toLowerCase()
         })
     }
+}
+
+function processCommand({senderUserID, messageText}) {
+    if (senderUserID != process.env.ADMIN_USER) return;
+    if (!messageText.startsWith("~")) return;
+
+    messageText = messageText.substr(1);
+    let args = messageText.split(" ")
+    const command = args.shift();
+    if (!command) return;
+
+    console.log(`[COMMAND] ${command} | ${JSON.stringify(args)}`);
+    // TODO: command logic (idek if i need any commands, just here if i need it)
 }
 
 async function updateDb({uid, username, stat}) {
