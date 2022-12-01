@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "set TARGET_CHANNEL=718682774&& node src/index.js",
-    "dev": "set TARGET_CHANNEL=718682774&& nodemon src/index.js"
+    "start": "set DOTENV=true&& node src/index.js",
+    "dev": "set DOTENV=true&& nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@kararty/dank-twitch-irc": "^5.0.0",
+    "dotenv": "^16.0.3",
     "mariadb": "^3.0.2"
   },
   "devDependencies": {

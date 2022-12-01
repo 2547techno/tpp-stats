@@ -1,10 +1,15 @@
 const { ChatClient } = require("@kararty/dank-twitch-irc");
 const { Queue } = require("./lib/queue")
+const mariadb = require("mariadb");
+
+if (process.env.DOTENV) {
+    require("dotenv").config();
+}
+
+const pool = mariadb.createPool({host: process.env.DB_HOST, user: process.env.DB_USER, connectionLimit: 5});
 const client = new ChatClient();
 const updateQueue = new Queue();
 const STAT_KEYWORDS = ["left","right","up","down","a","b","start","select","anarchy","democracy"];
-
-console.log(process.env.TARGET_CHANNEL);
 
 updateQueue.on("push", val => {
     console.log(`push: ${JSON.stringify(val)}`);
