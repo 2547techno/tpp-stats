@@ -1,5 +1,4 @@
 const { ChatClient } = require("@kararty/dank-twitch-irc");
-// const { Queue } = require("./lib/queue")
 const mariadb = require("mariadb");
 
 if (process.env.DOTENV) {
@@ -29,12 +28,7 @@ if(process.env.TMI_LOGIN && process.env.TMI_OAUTH) {
 }
 
 const client = new ChatClient(clientOpts);
-// const updateQueue = new Queue();
 const STAT_KEYWORDS = ["left","right","up","down","a","b","start","select","anarchy","democracy"];
-
-// updateQueue.on("push", val => {
-//     console.log(`push: ${JSON.stringify(val)} | size: ${updateQueue.size()}`);
-// })
 
 client.on("ready", () => {
     console.log("[IRC] Ready");
@@ -55,11 +49,6 @@ client.on("PRIVMSG", (msg) => {
 
 function updateStat({senderUserID, displayName, messageText}) {
     if (STAT_KEYWORDS.includes(messageText.trim().toLowerCase())) {
-        // updateQueue.push({
-        //     uid: senderUserID,
-        //     username: displayName,
-        //     message: messageText.trim().toLowerCase()
-        // })
 
         updateDb({
             uid: parseInt(senderUserID),
