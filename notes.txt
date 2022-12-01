@@ -1,0 +1,12 @@
+Valid input (case insensitive):
+left
+right
+up
+down
+a
+b
+start
+select
+anarchy
+democracy
+
