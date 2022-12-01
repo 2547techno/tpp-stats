@@ -29,6 +29,7 @@ if(process.env.TMI_LOGIN && process.env.TMI_OAUTH) {
 
 const client = new ChatClient(clientOpts);
 const STAT_KEYWORDS = ["left","right","up","down","a","b","start","select","anarchy","democracy"];
+const INVIS_CHAR = "󠀀";
 
 client.on("ready", () => {
     console.log("[IRC] Ready");
@@ -50,12 +51,13 @@ client.on("PRIVMSG", (msg) => {
 });
 
 function updateStat({senderUserID, displayName, messageText}) {
-    if (STAT_KEYWORDS.includes(messageText.trim().toLowerCase())) {
+    const message = messageText.replace(INVIS_CHAR,"").trim().toLowerCase()
+    if (STAT_KEYWORDS.includes(message)) {
 
         updateDb({
             uid: parseInt(senderUserID),
             username: displayName,
-            stat: messageText.trim().toLowerCase()
+            stat: message
         })
     }
 }
