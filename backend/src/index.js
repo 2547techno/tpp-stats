@@ -1,9 +1,15 @@
 const { ChatClient } = require("@kararty/dank-twitch-irc");
-const { Queue } = require("./lib/queue")
+// const { Queue } = require("./lib/queue")
 const mariadb = require("mariadb");
 
 if (process.env.DOTENV) {
     require("dotenv").config();
+}
+
+console.log("[CONFIG] TARGET_CHANNEL: " + process.env.TARGET_CHANNEL);
+console.log("[CONFIG] TMI_LOGIN: " + process.env.TMI_LOGIN);
+if (process.env.TMI_LOGIN && !process.env.TMI_OAUTH) {
+    console.log("[CONFIG] TMI_OAUTH MISSING");
 }
 
 const pool = mariadb.createPool({
@@ -13,7 +19,16 @@ const pool = mariadb.createPool({
     database: process.env.DB_DATABASE,
     connectionLimit: 1
 });
-const client = new ChatClient();
+
+let clientOpts = {};
+if(process.env.TMI_LOGIN && process.env.TMI_OAUTH) {
+    clientOpts = {
+        username: process.env.TMI_LOGIN,
+        password: process.env.TMI_OAUTH
+    }
+}
+
+const client = new ChatClient(clientOpts);
 // const updateQueue = new Queue();
 const STAT_KEYWORDS = ["left","right","up","down","a","b","start","select","anarchy","democracy"];
 
@@ -24,6 +39,7 @@ const STAT_KEYWORDS = ["left","right","up","down","a","b","start","select","anar
 client.on("ready", () => {
     console.log("[IRC] Ready");
     client.join("ipfx");
+    client.join("2547techno");
     client.join("mizkif");
 });
 client.on("close", err => console.log(`[IRC] Closed: ${err}`))
