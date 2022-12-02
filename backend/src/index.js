@@ -1,10 +1,11 @@
-const { ChatClient } = require("@kararty/dank-twitch-irc");
+const { ChatClient, AlternateMessageModifier } = require("@kararty/dank-twitch-irc");
 const mariadb = require("mariadb");
 
 if (process.env.DOTENV) {
     require("dotenv").config();
 }
 
+let canReply = process.env.TMI_LOGIN && process.env.TMI_OAUTH; //only enable replying with bot if creds are present
 console.log("[CONFIG] TARGET_CHANNEL: " + process.env.TARGET_CHANNEL);
 console.log("[CONFIG] TMI_LOGIN: " + process.env.TMI_LOGIN);
 if (process.env.TMI_LOGIN && !process.env.TMI_OAUTH) {
@@ -27,7 +28,8 @@ if(process.env.TMI_LOGIN && process.env.TMI_OAUTH) {
     }
 }
 
-const client = new ChatClient(clientOpts);
+let client = new ChatClient(clientOpts);
+client.use(new AlternateMessageModifier(client));
 const STAT_KEYWORDS = ["left","right","up","down","a","b","start","select","anarchy","democracy","l","r"];
 const INVIS_CHAR = "󠀀";
 
@@ -60,7 +62,7 @@ function updateStat({senderUserID, senderUsername, displayName, messageText}) {
     })
 }
 
-function processCommand({senderUserID, messageText}) {
+function processCommand({channelName, senderUserID, messageText}) {
     if (senderUserID != process.env.ADMIN_USER) return;
     if (!messageText.startsWith("~")) return;
 
@@ -71,6 +73,24 @@ function processCommand({senderUserID, messageText}) {
 
     console.log(`[COMMAND] ${command} | ${JSON.stringify(args)}`);
     // TODO: command logic (idek if i need any commands, just here if i need it)
+
+    switch (command.toLowerCase()) {
+        case "resetstats":
+        case "clearstats":
+            resetStats()
+                .then(() => {
+                    const message = "[DATABASE] Cleared STATS table"
+                    console.log(message);
+                    sendMessage(channelName, message)
+                })
+                .catch(err => {
+                    sendMessage(channelName, "[DATABASE] Error clearing STATS table")
+                })
+            break;
+    
+        default:
+            break;
+    }
 }
 
 async function updateDb({uid, username, displayName, stat}) {
@@ -98,6 +118,26 @@ async function updateDb({uid, username, displayName, stat}) {
     } finally {
         if (conn) conn.release();
     }
+}
+
+async function resetStats() {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        conn.beginTransaction();
+        await conn.query(`TRUNCATE TABLE TPP_STATS.STATS;`);
+        conn.commit();
+    } catch(err) {
+        console.error(err);
+        conn.rollback();
+    } finally {
+        if (conn) conn.release();
+    }
+}
+
+function sendMessage(channel, message) {
+    if (!canReply) return;
+    client.say(channel, message)
 }
 
 client.connect();
