@@ -28,14 +28,14 @@ if(process.env.TMI_LOGIN && process.env.TMI_OAUTH) {
 }
 
 const client = new ChatClient(clientOpts);
-const STAT_KEYWORDS = ["left","right","up","down","a","b","start","select","anarchy","democracy"];
+const STAT_KEYWORDS = ["left","right","up","down","a","b","start","select","anarchy","democracy","l","r"];
 const INVIS_CHAR = "󠀀";
 
 client.on("ready", () => {
     console.log("[IRC] Ready");
     client.join("ipfx");
     client.join("2547techno");
-    client.join("markzynk");
+    client.join("syn4ack");
     client.join("mizkif");
 });
 client.on("close", err => console.log(`[IRC] Closed: ${err}`))
