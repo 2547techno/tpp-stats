@@ -50,16 +50,14 @@ client.on("PRIVMSG", (msg) => {
     processCommand(msg);
 });
 
-function updateStat({senderUserID, displayName, messageText}) {
+function updateStat({senderUserID, senderUsername, displayName, messageText}) {
     const message = messageText.replaceAll(INVIS_CHAR,"").trim().toLowerCase()
-    if (STAT_KEYWORDS.includes(message)) {
-
-        updateDb({
-            uid: parseInt(senderUserID),
-            username: displayName,
-            stat: message
-        })
-    }
+    updateDb({
+        uid: parseInt(senderUserID),
+        username: senderUsername,
+        displayName,
+        stat: STAT_KEYWORDS.includes(message) ? message : "other"
+    })
 }
 
 function processCommand({senderUserID, messageText}) {
@@ -75,7 +73,7 @@ function processCommand({senderUserID, messageText}) {
     // TODO: command logic (idek if i need any commands, just here if i need it)
 }
 
-async function updateDb({uid, username, stat}) {
+async function updateDb({uid, username, displayName, stat}) {
     let conn;
     try {
         conn = await pool.getConnection();
@@ -89,8 +87,8 @@ async function updateDb({uid, username, stat}) {
         if (res.affectedRows < 1) {
             await conn.query(`
                 INSERT INTO TPP_STATS.STATS
-                (UID, USERNAME, COUNT_${stat.toUpperCase()})
-                VALUES(${uid}, '${username}', 1);
+                (UID, USERNAME, DISPLAYNAME, COUNT_${stat.toUpperCase()})
+                VALUES(${uid}, '${username}', '${displayName}', 1);
             `);
         }
         conn.commit();
