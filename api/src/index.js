@@ -1,5 +1,6 @@
 const mariadb = require("mariadb");
 const app = require("express")();
+const cors = require("cors");
 const SqlString = require('sqlstring');
 
 if (process.env.DOTENV) {
@@ -22,6 +23,8 @@ const pool = mariadb.createPool({
     database: process.env.DB_DATABASE,
     connectionLimit: 10
 });
+
+app.use(cors())
 
 app.get("/", (req, res) => {
     res.json({
