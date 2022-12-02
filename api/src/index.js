@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
     })
 })
 
-app.get("/stats/", (req, res) => {
+app.get("/totalStats/", (req, res) => {
     res.json({
         foo: "total stats"
     })
