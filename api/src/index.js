@@ -2,6 +2,8 @@ const mariadb = require("mariadb");
 const app = require("express")();
 const cors = require("cors");
 const SqlString = require('sqlstring');
+let totalStats = {};
+let totalStatsInterval = null;
 
 if (process.env.DOTENV) {
     require("dotenv").config();
@@ -32,9 +34,22 @@ app.get("/", (req, res) => {
     })
 })
 
-app.get("/totalStats/", (req, res) => {
+app.get("/totalStats", (req, res) => {
     res.json({
-        foo: "total stats"
+        a: parseInt(totalStats.COUNT_A),
+        b: parseInt(totalStats.COUNT_B),
+        left: parseInt(totalStats.COUNT_LEFT),
+        right: parseInt(totalStats.COUNT_RIGHT),
+        up: parseInt(totalStats.COUNT_UP),
+        down: parseInt(totalStats.COUNT_DOWN),
+        start: parseInt(totalStats.COUNT_START),
+        select: parseInt(totalStats.COUNT_SELECT),
+        l: parseInt(totalStats.COUNT_L),
+        r: parseInt(totalStats.COUNT_R),
+        anarchy: parseInt(totalStats.COUNT_ANARCHY),
+        democracy: parseInt(totalStats.COUNT_DEMOCRACY),
+        total: parseInt(totalStats.TOTAL),
+        other: parseInt(totalStats.COUNT_OTHER)
     })
 })
 
@@ -64,10 +79,10 @@ app.get("/stats/:username", async (req, res) => {
             select: parseInt(userData.COUNT_SELECT),
             l: parseInt(userData.COUNT_L),
             r: parseInt(userData.COUNT_R),
-            anarchy: parseInt(userData.COUNT_A),
-            democracy: parseInt(userData.COUNT_A),
-            other: parseInt(userData.COUNT_OTHER),
-            total: parseInt(userData.TOTAL)
+            anarchy: parseInt(userData.COUNT_ANARCHY),
+            democracy: parseInt(userData.COUNT_DEMOCRACY),
+            total: parseInt(userData.TOTAL),
+            other: parseInt(userData.COUNT_OTHER)
         }
     })
 })
@@ -93,6 +108,27 @@ async function getUserStats(username) {
     return res;
 }
 
+async function getTotalStats() {
+    let conn;
+    let res;
+    try {
+        conn = await pool.getConnection();
+        conn.beginTransaction()
+        res = (await conn.query(`SELECT * FROM TPP_STATS.TOTAL_STATS ts;`))[0];
+        conn.commit();
+    } catch(err) {
+        console.error(err);
+        conn.rollback();
+    } finally {
+        if (conn) conn.release();
+    }
+    return res;
+}
+
 app.listen(parseInt(process.env.PORT), () => {
     console.log("[server] listening on: " + process.env.PORT);
+    getTotalStats().then(data => totalStats = data);
+    totalStatsInterval = setInterval(() => {
+        getTotalStats().then(data => totalStats = data);
+    }, 60 * 1000) // 1s interval
 })
