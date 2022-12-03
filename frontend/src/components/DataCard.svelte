@@ -5,8 +5,11 @@
 
 <main>
     <Card>
-        data
-        {JSON.stringify(data)}
+        {#each Object.keys(data.count) as key}
+            {#if key != "other"}
+                <p>{key.charAt(0).toUpperCase() + key.slice(1)}: {data.count[key]}</p>
+            {/if}
+        {/each}
     </Card>
 </main>
 
