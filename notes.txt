@@ -19,3 +19,7 @@ do i cache it to be returned with each user data request?
 or do i call the view and return the data on each request? (no caching)
     - ratio will be more accurate but involves an extra db call each time
     - db call is heavier than normal data fetch since it sums the entire table
+** i ended up caching for 1 min **
+
+top 100 user stats:
+    - is also on a 1 min cache
