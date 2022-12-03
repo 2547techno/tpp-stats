@@ -1,4 +1,7 @@
 <script>
+  import DataCard from "./components/DataCard.svelte";
+  import ErrorCard from "./components/ErrorCard.svelte";
+
   $: username = rawUsername.trim();
 
   let rawUsername = "";
@@ -54,7 +57,20 @@
     >
     <button on:click={() => fetchUserData(username)} disabled='{!checkValidUsername(username)}' id="search-button">SEARCH</button>
   </div>
-  {JSON.stringify(data)}
+  <!-- {JSON.stringify(data)} -->
+
+  <div class="response-container">
+    {#if data}  
+
+      {#if data.error}
+        <ErrorCard status={data.status} message={data.message} />
+      {:else}
+        <DataCard {data}/>
+      {/if}
+
+    {/if}
+  </div>
+
 </main>
 
 <style lang="scss">
