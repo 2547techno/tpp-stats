@@ -1,15 +1,17 @@
 <script>
     import Card from "./Card.svelte";
+    import Table from "./Table.svelte";
     export let data;
+
 </script>
 
 <main>
     <Card>
-        {#each Object.keys(data.count) as key}
-            {#if key != "other"}
-                <p>{key.charAt(0).toUpperCase() + key.slice(1)}: {data.count[key]}</p>
-            {/if}
-        {/each}
+        <Table headers={Object.keys(data.count)} data={[{
+            label: "count",
+            entires: Object.values(data.count)
+        }]}/>
+        <!-- TODO: add pie charts -->
     </Card>
 </main>
 
