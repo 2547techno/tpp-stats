@@ -8,6 +8,7 @@
 
   async function fetchUserData(user) {
     if (!user) return;
+    if (user == lastUsername) return;
     let url = import.meta.env.VITE_API_URL;
     url = url.substr(0, url.length - (url[url.length-1] == "/" ? 1 : 0)) // trim tailing "/"
 
@@ -27,6 +28,12 @@
     const reg = /^[a-zA-Z0-9_]{4,25}$/;
     return user.match(reg) == null ? false : true
   }
+
+  function handleEnter(e) {
+    if (e.key == "Enter") {
+      fetchUserData(username)
+    }
+  }
 </script>
 
 <main>
@@ -35,7 +42,16 @@
     <p>User Stats</p>
   </div>
   <div class="search-container">
-    <input type="text" name="username" id="username-input" bind:value={rawUsername} placeholder="Username">
+    <input
+      type="text"
+      name="username"
+      id="username-input"
+      placeholder="Username"
+      autocomplete="off"
+      spellcheck="false"
+      on:keypress={handleEnter}
+      bind:value={rawUsername}
+    >
     <button on:click={() => fetchUserData(username)} disabled='{!checkValidUsername(username)}' id="search-button">SEARCH</button>
   </div>
   {JSON.stringify(data)}
@@ -76,7 +92,8 @@
       height: 40px;
       width: 350px;
       text-indent:20px;
-      color: rgb(218, 218, 218);
+      color: rgb(230, 230, 230);
+      font-size: 15px;
 
       &:focus {
         outline: none;
@@ -100,7 +117,8 @@
       border-top-right-radius: 10px;
       border-bottom-right-radius: 10px;
       cursor: pointer;
-      transition-duration: 0.2s;
+      font-size: 14px;
+      transition-duration: 0.3s;
 
       &:hover {
         filter: brightness(1.2);
