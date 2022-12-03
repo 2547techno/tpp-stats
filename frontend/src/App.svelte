@@ -30,10 +30,86 @@
 </script>
 
 <main>
-  <input type="text" name="username" id="username-input" bind:value={rawUsername}>
-  <button on:click={() => fetchUserData(username)} disabled='{!checkValidUsername(username)}'>SEARCH</button>
+  <div class="title-container">
+    <p>Mizkif's Twitch Plays Pokémon 2022</p>
+    <p>User Stats</p>
+  </div>
+  <div class="search-container">
+    <input type="text" name="username" id="username-input" bind:value={rawUsername} placeholder="Username">
+    <button on:click={() => fetchUserData(username)} disabled='{!checkValidUsername(username)}' id="search-button">SEARCH</button>
+  </div>
   {JSON.stringify(data)}
 </main>
 
-<style>
+<style lang="scss">
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .title-container {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    p {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 100;
+    }
+  }
+  
+  .search-container {
+    margin: 20px;
+    display: flex;
+
+    #username-input {
+      background-color: #9d3e3e36;
+      border: none;
+      border-top: #9D3E3E solid 2px;
+      border-left: #9D3E3E solid 2px;
+      border-bottom: #9D3E3E solid 2px;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      height: 40px;
+      width: 350px;
+      text-indent:20px;
+      color: rgb(218, 218, 218);
+
+      &:focus {
+        outline: none;
+
+      }
+
+      &::-webkit-input-placeholder {
+        color: #C66E6E
+      }
+      
+      &:-moz-placeholder {
+        color: #C66E6E
+      }
+    }
+
+    #search-button {
+      width: 100px;
+      background-color: #4F4DC7;
+      border: none;
+      color: white;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      cursor: pointer;
+      transition-duration: 0.2s;
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+      
+      &:disabled {
+        filter: brightness(0.7);
+        cursor: default;
+      }
+    }
+  }
 </style>
