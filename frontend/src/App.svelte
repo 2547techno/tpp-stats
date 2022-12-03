@@ -28,12 +28,12 @@
   }
 
   function checkValidUsername(user) {
-    const reg = /^[a-zA-Z0-9_]{4,25}$/;
+    const reg = /^[a-zA-Z0-9_]{1,25}$/;
     return user.match(reg) == null ? false : true
   }
 
   function handleEnter(e) {
-    if (e.key == "Enter") {
+    if (e.key == "Enter" && checkValidUsername(username)) {
       fetchUserData(username)
     }
   }
