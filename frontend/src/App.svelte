@@ -57,17 +57,18 @@
     >
     <button on:click={() => fetchUserData(username)} disabled='{!checkValidUsername(username)}' id="search-button">SEARCH</button>
   </div>
-  <!-- {JSON.stringify(data)} -->
 
   <div class="response-container">
-    {#if data}  
+    {#if fetching}
+      <img src="loading.svg" id="loading-svg" alt="loading">
+    {/if}
 
+    {#if !fetching && data}  
       {#if data.error}
         <ErrorCard status={data.status} message={data.message} />
       {:else}
         <DataCard {data}/>
       {/if}
-
     {/if}
   </div>
 
@@ -144,6 +145,12 @@
         filter: brightness(0.7);
         cursor: default;
       }
+    }
+  }
+
+  .response-container {
+    #loading-svg {
+      margin-top: 20px;
     }
   }
 </style>
