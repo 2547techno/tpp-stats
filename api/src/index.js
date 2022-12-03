@@ -2,8 +2,10 @@ const mariadb = require("mariadb");
 const app = require("express")();
 const cors = require("cors");
 const SqlString = require('sqlstring');
+const { parseUserData, parseTotalData } = require("./helper")
 let totalStats = {};
-let totalStatsInterval = null;
+let topStats = [];
+let statsInterval = null;
 
 if (process.env.DOTENV) {
     require("dotenv").config();
@@ -53,6 +55,19 @@ app.get("/totalStats", (req, res) => {
     })
 })
 
+app.get("/topStats", (req, res) => {
+    let users = [];
+
+    for (let user of topStats) {
+        users.push(parseUserData(user))
+    }
+
+    res.json({
+        users,
+        totalStats: parseTotalData(totalStats)
+    })
+})
+
 app.get("/stats/:username", async (req, res) => {
     const data = await getUserStats(req.params.username);
 
@@ -66,41 +81,8 @@ app.get("/stats/:username", async (req, res) => {
 
     const userData = data[0];
     res.json({
-        uid: userData.UID,
-        displayName: userData.DISPLAYNAME,
-        username: userData.USERNAME,
-        count: {
-            a: parseInt(userData.COUNT_A),
-            b: parseInt(userData.COUNT_B),
-            left: parseInt(userData.COUNT_LEFT),
-            right: parseInt(userData.COUNT_RIGHT),
-            up: parseInt(userData.COUNT_UP),
-            down: parseInt(userData.COUNT_DOWN),
-            start: parseInt(userData.COUNT_START),
-            select: parseInt(userData.COUNT_SELECT),
-            l: parseInt(userData.COUNT_L),
-            r: parseInt(userData.COUNT_R),
-            anarchy: parseInt(userData.COUNT_ANARCHY),
-            democracy: parseInt(userData.COUNT_DEMOCRACY),
-            total: parseInt(userData.TOTAL),
-            other: parseInt(userData.COUNT_OTHER)
-        },
-        totalCount: {
-            a: parseInt(totalStats.COUNT_A),
-            b: parseInt(totalStats.COUNT_B),
-            left: parseInt(totalStats.COUNT_LEFT),
-            right: parseInt(totalStats.COUNT_RIGHT),
-            up: parseInt(totalStats.COUNT_UP),
-            down: parseInt(totalStats.COUNT_DOWN),
-            start: parseInt(totalStats.COUNT_START),
-            select: parseInt(totalStats.COUNT_SELECT),
-            l: parseInt(totalStats.COUNT_L),
-            r: parseInt(totalStats.COUNT_R),
-            anarchy: parseInt(totalStats.COUNT_ANARCHY),
-            democracy: parseInt(totalStats.COUNT_DEMOCRACY),
-            total: parseInt(totalStats.TOTAL),
-            other: parseInt(totalStats.COUNT_OTHER)
-        }
+        ...parseUserData(userData),
+        totalCount: parseTotalData(totalStats)
     })
 })
 
@@ -142,10 +124,30 @@ async function getTotalStats() {
     return res;
 }
 
+async function getTopStats() {
+    let conn;
+    let res;
+    try {
+        conn = await pool.getConnection();
+        conn.beginTransaction()
+        res = await conn.query(`SELECT * FROM TPP_STATS.TOP_STATS ts;`);
+        conn.commit();
+    } catch(err) {
+        console.error(err);
+        conn.rollback();
+    } finally {
+        if (conn) conn.release();
+    }
+    return res;
+}
+
 app.listen(parseInt(process.env.PORT), () => {
     console.log("[server] listening on: " + process.env.PORT);
+
     getTotalStats().then(data => totalStats = data);
-    totalStatsInterval = setInterval(() => {
+    getTopStats().then(data => topStats = data);
+    statsInterval = setInterval(() => {
         getTotalStats().then(data => totalStats = data);
-    }, 60 * 1000) // 1s interval
+        getTopStats().then(data => topStats = data);
+    }, 60 * 1000) // 1m interval
 })
