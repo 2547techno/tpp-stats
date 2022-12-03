@@ -58,8 +58,9 @@ app.get("/stats/:username", async (req, res) => {
 
     if (data.length < 1) {
         return res.status(404).json({
+            error: true,
             status: 404,
-            message: `stats for ${req.params.username} not found`
+            message: `No stats found for ${req.params.username}!`
         })
     }
 
