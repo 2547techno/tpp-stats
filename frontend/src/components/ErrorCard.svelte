@@ -9,6 +9,9 @@
     <Card>
         <div class="container">
             <p>{message}</p>
+            {#if status != 404}
+                <p>{status}</p>
+            {/if}
         </div>
     </Card>
 </main>
