@@ -40,6 +40,7 @@
 </script>
 
 <main>
+  <p id="credit">By 2547techno</p>
   <div class="title-container">
     <p>Mizkif's Twitch Plays Pokémon 2022</p>
     <p>User Stats</p>
@@ -81,8 +82,18 @@
     align-items: center;
   }
   
+  #credit {
+    margin: 0;
+    font-size: 13px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: rgb(150, 150, 150);
+  }
+
   .title-container {
     margin: 20px;
+    margin-top: 20vh;
     display: flex;
     flex-direction: column;
     align-items: center;
