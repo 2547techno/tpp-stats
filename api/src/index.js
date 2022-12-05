@@ -50,8 +50,8 @@ app.get("/totalStats", (req, res) => {
         r: parseInt(totalStats.COUNT_R),
         anarchy: parseInt(totalStats.COUNT_ANARCHY),
         democracy: parseInt(totalStats.COUNT_DEMOCRACY),
-        total: parseInt(totalStats.TOTAL),
-        other: parseInt(totalStats.COUNT_OTHER)
+        total: parseInt(totalStats.TOTAL)
+        // other: parseInt(totalStats.COUNT_OTHER)
     })
 })
 

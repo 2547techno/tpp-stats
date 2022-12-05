@@ -16,8 +16,8 @@ function parseUserData(data) {
             r: parseInt(data.COUNT_R),
             anarchy: parseInt(data.COUNT_ANARCHY),
             democracy: parseInt(data.COUNT_DEMOCRACY),
-            total: parseInt(data.TOTAL),
-            other: parseInt(data.COUNT_OTHER)
+            total: parseInt(data.TOTAL)
+            // other: parseInt(data.COUNT_OTHER)
         }
     }
 }
@@ -36,8 +36,8 @@ function parseTotalData(data) {
         r: parseInt(data.COUNT_R),
         anarchy: parseInt(data.COUNT_ANARCHY),
         democracy: parseInt(data.COUNT_DEMOCRACY),
-        total: parseInt(data.TOTAL),
-        other: parseInt(data.COUNT_OTHER)
+        total: parseInt(data.TOTAL)
+        // other: parseInt(data.COUNT_OTHER)
     }
 }
 
