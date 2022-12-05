@@ -10,6 +10,10 @@
         <Table headers={Object.keys(data.count)} data={[{
             label: "count",
             entires: Object.values(data.count)
+        },
+        {
+            label: "% of Chat",
+            entires: Object.keys(data.count).map(k => `${Math.round(data.count[k] / data.totalCount[k] * 100000) / 1000}%`)
         }]}/>
         <!-- TODO: add pie charts -->
     </Card>
