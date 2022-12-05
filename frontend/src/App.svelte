@@ -93,7 +93,7 @@
 
   .title-container {
     margin: 20px;
-    margin-top: 20vh;
+    margin-top: 12vh;
     display: flex;
     flex-direction: column;
     align-items: center;
