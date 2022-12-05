@@ -66,7 +66,6 @@
             label: "% of Chat",
             entires: Object.keys(data.count).map(k => `${Math.round(data.count[k] / data.totalCount[k] * 100000) / 1000}%`)
         }]}/>
-        <!-- <div class="chart-title">% of Your Messages</div> -->
         <div class="chart-container">
             <canvas bind:this={chartElem} id="chart"></canvas>
         </div>
@@ -84,12 +83,5 @@
         height: 400px;
         display: flex;
         justify-content: center;
-    }
-    
-    .chart-title {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        transform: translateY(25px);
     }
 </style>
