@@ -41,6 +41,9 @@
                     legend: {
                         labels: {
                             color: '#ffffff',
+                            filter: ((legendItem, chartData) => {
+                                return chartData.datasets[0].data[legendItem.index] != 0
+                            })
                         },
                         position: 'right'
                     },
