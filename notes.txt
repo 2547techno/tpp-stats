@@ -23,5 +23,3 @@ or do i call the view and return the data on each request? (no caching)
 
 top 100 user stats:
     - is also on a 1 min cache
-
-tpp is over, look at perm data
