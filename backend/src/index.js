@@ -36,9 +36,10 @@ const INVIS_CHAR = "󠀀";
 client.on("ready", () => {
     console.log("[IRC] Ready");
     client.join("ipfx");
-    client.join("2547techno");
+    client.join("techno_______");
     client.join("syn4ack");
     client.join("mizkif");
+    client.join("otknetwork");
 });
 client.on("close", err => console.log(`[IRC] Closed: ${err}`))
 
@@ -99,14 +100,14 @@ async function updateDb({uid, username, displayName, stat}) {
         conn = await pool.getConnection();
         conn.beginTransaction();
         const res = await conn.query(`
-            UPDATE TPP_STATS.STATS
+            UPDATE ${process.env.DB_DATABASE}.STATS
             SET COUNT_${stat.toUpperCase()} = COUNT_${stat.toUpperCase()}+1
             WHERE UID=${uid};
         `);
 
         if (res.affectedRows < 1) {
             await conn.query(`
-                INSERT INTO TPP_STATS.STATS
+                INSERT INTO ${process.env.DB_DATABASE}.STATS
                 (UID, USERNAME, DISPLAYNAME, COUNT_${stat.toUpperCase()})
                 VALUES(${uid}, '${username}', '${displayName}', 1);
             `);
@@ -125,7 +126,7 @@ async function resetStats() {
     try {
         conn = await pool.getConnection();
         conn.beginTransaction();
-        await conn.query(`TRUNCATE TABLE TPP_STATS.STATS;`);
+        await conn.query(`TRUNCATE TABLE ${process.env.DB_DATABASE}.STATS;`);
         conn.commit();
     } catch(err) {
         console.error(err);
