@@ -2,6 +2,7 @@ const { ApolloServer } = require('@apollo/server');
 const { RESTDataSource } = require('@apollo/datasource-rest');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { TYPE_DEFS } = require('./type');
+const { GraphQLError } = require('graphql');
 
 if (process.env.DOTENV) {
     require("dotenv").config();
@@ -26,10 +27,22 @@ class StatsAPI extends RESTDataSource {
             .then(res => res.users)
     }
 
+    async getUserStats(login) {
+        try {
+            const res = await this.get(new URL(`/stats/${login}`, this.baseUrl))
+            return res
+        } catch (err) {
+            return null;
+        }
+    }
+
 }
 
 const resolvers = {
     Query: {
+        user: async (parent, args, { dataSources }, info) => {
+            return dataSources.statsAPI.getUserStats(args.login)
+        },
         totalStats: async (parent, args, { dataSources }, info) => {
             return dataSources.statsAPI.getTotalStats()
         },

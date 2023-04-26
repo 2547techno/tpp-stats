@@ -23,7 +23,7 @@ const TYPE_DEFS = `#graphql
   }
 
   type Query {
-    user: User
+    user(login: String): User
     totalStats: Stats
     topStats: [User]
   }
