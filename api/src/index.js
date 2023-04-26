@@ -91,7 +91,7 @@ async function getUserStats(username) {
         conn = await pool.getConnection();
         conn.beginTransaction();
         res = await conn.query(SqlString.format(`
-            SELECT * FROM TPP_STATS.STATS
+            SELECT * FROM ${process.env.DB_DATABASE}.STATS
             WHERE USERNAME = ?
         `, username));
 
@@ -111,7 +111,7 @@ async function getTotalStats() {
     try {
         conn = await pool.getConnection();
         conn.beginTransaction()
-        res = (await conn.query(`SELECT * FROM TPP_STATS.TOTAL_STATS ts;`))[0];
+        res = (await conn.query(`SELECT * FROM ${process.env.DB_DATABASE}.TOTAL_STATS ts;`))[0];
         conn.commit();
     } catch(err) {
         console.error(err);
@@ -128,7 +128,7 @@ async function getTopStats() {
     try {
         conn = await pool.getConnection();
         conn.beginTransaction()
-        res = await conn.query(`SELECT * FROM TPP_STATS.TOP_STATS ts;`);
+        res = await conn.query(`SELECT * FROM ${process.env.DB_DATABASE}.TOP_STATS ts;`);
         conn.commit();
     } catch(err) {
         console.error(err);
