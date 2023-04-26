@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  tracker:
+  api:
     build: .
     image: "2547techno/tpp-api:latest"
     ports:
