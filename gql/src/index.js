@@ -17,11 +17,11 @@ if (!process.env.PORT) console.log("[config] PORT MISSING, USING DEFAULT PORT");
 class StatsAPI extends RESTDataSource {
     baseUrl = new URL(process.env.API_URL)
 
-    async getTotalStatus() {
+    async getTotalStats() {
         return this.get(new URL("/totalStats", this.baseUrl))
     }
 
-    async getTopStatus() {
+    async getTopStats() {
         return this.get(new URL("/topStats", this.baseUrl))
             .then(res => res.users)
     }
@@ -31,10 +31,10 @@ class StatsAPI extends RESTDataSource {
 const resolvers = {
     Query: {
         totalStats: async (parent, args, { dataSources }, info) => {
-            return dataSources.statsAPI.getTotalStatus()
+            return dataSources.statsAPI.getTotalStats()
         },
         topStats: async (parent, args, { dataSources }, info) => {
-            return dataSources.statsAPI.getTopStatus()
+            return dataSources.statsAPI.getTopStats()
         }
     }
 };
