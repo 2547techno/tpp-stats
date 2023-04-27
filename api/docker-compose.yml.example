@@ -10,3 +10,4 @@ services:
       DB_USER:
       DB_PASS:
       DB_DATABASE:
+      PORT: 3000
