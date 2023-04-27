@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  gql:
+    build: .
+    image: "2547techno/tpp-gql:latest"
+    ports:
+      - 2555:3000
+    environment:
+      API_URL: "http://localhost:2526"
+      PORT: 3000
