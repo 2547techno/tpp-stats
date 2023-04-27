@@ -16,11 +16,11 @@
         {
             type: "doughnut",
             data: {
-                labels: Object.keys(data.count).filter(x => x.toLowerCase() != "total"),
+                labels: Object.keys(data.user.count).filter(x => x.toLowerCase() != "total"),
                 datasets: [
                     {
                         label: "data",
-                        data: Object.keys(data.count).filter(x => x.toLowerCase() != "total").map(k => data.count[k]),
+                        data: Object.keys(data.user.count).filter(x => x.toLowerCase() != "total").map(k => data.user.count[k]),
                         backgroundColor: [
                             'rgb(255, 99, 132)',
                             'rgb(54, 162, 235)',
@@ -60,15 +60,18 @@
 
 <main>
     <Card>
-        <h3 class="title">{data.displayName}'s Stats</h3>
-        <Table headers={Object.keys(data.count)} data={[{
-            label: "count",
-            entires: Object.values(data.count)
-        },
-        {
-            label: "% of Chat",
-            entires: Object.keys(data.count).map(k => `${Math.round(data.count[k] / data.totalCount[k] * 100000) / 1000}%`)
-        }]}/>
+        <h3 class="title">{data.user.displayName}'s Stats</h3>
+        <Table 
+            headers={Object.keys(data.user.count)} 
+            data={[{
+                label: "count",
+                entires: Object.values(data.user.count)
+            },
+            {
+                label: "% of Chat",
+                entires: Object.keys(data.user.count).map(k => `${Math.round(data.user.count[k] / data.totalStats[k] * 100000) / 1000}%`)
+            }]}
+        />
         <div class="chart-container">
             <canvas bind:this={chartElem} id="chart"></canvas>
         </div>

@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    image: "2547techno/tpp-api:latest"
+    ports:
+      - 2525:3000
+    environment:
+      DB_HOST:
+      DB_USER:
+      DB_PASS:
+      DB_DATABASE:
+      PORT: 3000

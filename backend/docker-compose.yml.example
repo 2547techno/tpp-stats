@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  tracker:
+    build: .
+    image: "2547techno/tpp-tracker:latest"
+    environment:
+      TARGET_CHANNEL:
+      ADMIN_USER:
+      DB_HOST:
+      DB_USER:
+      DB_PASS:
+      DB_DATABASE:
+      TMI_LOGIN:
+      TMI_OAUTH:

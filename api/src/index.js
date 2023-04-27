@@ -10,15 +10,13 @@ let statsInterval = null;
 if (process.env.DOTENV) {
     require("dotenv").config();
 }
+const PORT = process.env.PORT ?? 3000;
 
 if (!process.env.DB_HOST) console.log("[config] DB_HOST MISSING")
 if (!process.env.DB_USER) console.log("[config] DB_USER MISSING")
 if (!process.env.DB_PASS) console.log("[config] DB_PASS MISSING")
 if (!process.env.DB_DATABASE) console.log("[config] DB_DATABASE MISSING")
-if (!process.env.PORT) {
-    console.log("[config] PORT MISSING")
-    process.exit(1);
-}
+if (!process.env.PORT) console.log("[config] PORT MISSING, USING DEFAULT PORT");
 
 const pool = mariadb.createPool({
     host: process.env.DB_HOST,
@@ -93,7 +91,7 @@ async function getUserStats(username) {
         conn = await pool.getConnection();
         conn.beginTransaction();
         res = await conn.query(SqlString.format(`
-            SELECT * FROM TPP_STATS.STATS
+            SELECT * FROM ${process.env.DB_DATABASE}.STATS
             WHERE USERNAME = ?
         `, username));
 
@@ -113,7 +111,7 @@ async function getTotalStats() {
     try {
         conn = await pool.getConnection();
         conn.beginTransaction()
-        res = (await conn.query(`SELECT * FROM TPP_STATS.TOTAL_STATS ts;`))[0];
+        res = (await conn.query(`SELECT * FROM ${process.env.DB_DATABASE}.TOTAL_STATS ts;`))[0];
         conn.commit();
     } catch(err) {
         console.error(err);
@@ -130,7 +128,7 @@ async function getTopStats() {
     try {
         conn = await pool.getConnection();
         conn.beginTransaction()
-        res = await conn.query(`SELECT * FROM TPP_STATS.TOP_STATS ts;`);
+        res = await conn.query(`SELECT * FROM ${process.env.DB_DATABASE}.TOP_STATS ts;`);
         conn.commit();
     } catch(err) {
         console.error(err);
@@ -141,8 +139,8 @@ async function getTopStats() {
     return res;
 }
 
-app.listen(parseInt(process.env.PORT), () => {
-    console.log("[server] listening on: " + process.env.PORT);
+app.listen(parseInt(PORT), () => {
+    console.log("[server] listening on: " + PORT);
 
     getTotalStats().then(data => totalStats = data);
     getTopStats().then(data => topStats = data);
