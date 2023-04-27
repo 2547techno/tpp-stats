@@ -15,27 +15,37 @@ if (process.env.DOTENV) {
 }
 const PORT = process.env.PORT ?? 3000;
 
-if (!process.env.API_URL) {
-    console.log("[config] API_URL MISSING")
+if (!process.env.API1_URL) {
+    console.log("[config] API1_URL MISSING")
+    process.exit(1);
+}
+if (!process.env.API2_URL) {
+    console.log("[config] API2_URL MISSING")
     process.exit(1);
 }
 if (!process.env.PORT) console.log("[config] PORT MISSING, USING DEFAULT PORT");
 
 class StatsAPI extends RESTDataSource {
-    baseUrl = new URL(process.env.API_URL)
+    baseUrl1 = new URL(process.env.API1_URL)
+    baseUrl2 = new URL(process.env.API2_URL)
 
-    async getTotalStats() {
-        return this.get(new URL("/totalStats", this.baseUrl))
+    versions = {
+        "MIZKIF_2022": this.baseUrl1,
+        "OTK_2023": this.baseUrl2
     }
 
-    async getTopStats() {
-        return this.get(new URL("/topStats", this.baseUrl))
+    async getTotalStats(version) {
+        return this.get(new URL("/totalStats", this.versions[version]))
+    }
+
+    async getTopStats(version) {
+        return this.get(new URL("/topStats", this.versions[version]))
             .then(res => res.users)
     }
 
-    async getUserStats(login) {
+    async getUserStats(login, version) {
         try {
-            const res = await this.get(new URL(`/stats/${login}`, this.baseUrl))
+            const res = await this.get(new URL(`/stats/${login}`, this.versions[version]))
             return res
         } catch (err) {
             return null;
@@ -47,13 +57,13 @@ class StatsAPI extends RESTDataSource {
 const resolvers = {
     Query: {
         user: async (parent, args, { dataSources }, info) => {
-            return dataSources.statsAPI.getUserStats(args.login)
+            return dataSources.statsAPI.getUserStats(args.login, args.version)
         },
         totalStats: async (parent, args, { dataSources }, info) => {
-            return dataSources.statsAPI.getTotalStats()
+            return dataSources.statsAPI.getTotalStats(args.version)
         },
         topStats: async (parent, args, { dataSources }, info) => {
-            return dataSources.statsAPI.getTopStats()
+            return dataSources.statsAPI.getTopStats(args.version)
         }
     }
 };

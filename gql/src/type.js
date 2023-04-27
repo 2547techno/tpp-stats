@@ -22,10 +22,15 @@ const TYPE_DEFS = `#graphql
     total: Int
   }
 
+  enum Version {
+    MIZKIF_2022
+    OTK_2023
+  }
+
   type Query {
-    user(login: String): User
-    totalStats: Stats
-    topStats: [User]
+    user(login: String, version: Version): User
+    totalStats(version: Version): Stats
+    topStats(version: Version): [User]
   }
 `;
 

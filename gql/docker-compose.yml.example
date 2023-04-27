@@ -6,5 +6,6 @@ services:
     ports:
       - 2555:3000
     environment:
-      API_URL: "http://localhost:2526"
+      API1_URL: "http://localhost:2526"
+      API2_URL: "http://localhost:2527"
       PORT: 3000
