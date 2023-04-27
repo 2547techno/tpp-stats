@@ -1,6 +1,8 @@
 <script>
   import DataCard from "./components/DataCard.svelte";
   import ErrorCard from "./components/ErrorCard.svelte";
+  import { compileGQL } from "./gql/helper.js";
+  import { USER_STATS } from "./gql/queries.js";
 
   $: username = rawUsername.trim();
 
@@ -17,8 +19,30 @@
 
     fetching = true;
     try {
-      const res = await fetch(`${url}/stats/${user}`);
-      data = await res.json();
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(compileGQL(USER_STATS, {
+          version: "MIZKIF_2022",
+          login: user
+        }))
+      });
+
+      const json = await res.json();
+
+      // if user not found
+      if (!json.data.user) {
+        data = {
+          error: true,
+          status: 404,
+          message: `No stats found for ${user}!`
+        }
+      } else {
+        data = json.data
+      }
+      
       lastUsername = user;
     } catch(err) {
       console.error(err)
