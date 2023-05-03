@@ -1,3 +1,4 @@
+const { GraphQLError } = require("graphql")
 const { ApolloServer } = require('@apollo/server');
 const { RESTDataSource } = require('@apollo/datasource-rest');
 const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer');
@@ -57,12 +58,33 @@ class StatsAPI extends RESTDataSource {
 const resolvers = {
     Query: {
         user: async (parent, args, { dataSources }, info) => {
+            if (!args.version) {
+                throw new GraphQLError('Missing "version" argument', {
+                    extensions: {
+                        code: 'BAD_REQUEST',
+                    },
+                });
+            }
             return dataSources.statsAPI.getUserStats(args.login, args.version)
         },
         totalStats: async (parent, args, { dataSources }, info) => {
+            if (!args.version) {
+                throw new GraphQLError('Missing "version" argument', {
+                    extensions: {
+                        code: 'BAD_REQUEST',
+                    },
+                });
+            }
             return dataSources.statsAPI.getTotalStats(args.version)
         },
         topStats: async (parent, args, { dataSources }, info) => {
+            if (!args.version) {
+                throw new GraphQLError('Missing "version" argument', {
+                    extensions: {
+                        code: 'BAD_REQUEST',
+                    },
+                });
+            }
             return dataSources.statsAPI.getTopStats(args.version)
         }
     }
